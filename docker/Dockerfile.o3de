@@ -1,0 +1,58 @@
+# LawnMower-Sim — O3DE 25.05 + ROS2 Jazzy
+# Base: Ubuntu 24.04 + ROS2 Jazzy (misma base que lm-nav2-jetson)
+FROM ros:jazzy-ros-base-noble
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# ROS2 Jazzy — Nav2 y herramientas necesarias para correr junto al stack
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-jazzy-nav2-bringup \
+    ros-jazzy-nav2-msgs \
+    ros-jazzy-geometry-msgs \
+    ros-jazzy-sensor-msgs \
+    ros-jazzy-nav-msgs \
+    ros-jazzy-tf2-ros \
+    ros-jazzy-tf2-geometry-msgs \
+    ros-jazzy-foxglove-bridge \
+    python3-colcon-common-extensions \
+    python3-rosdep \
+    wget curl git cmake ninja-build \
+    libglu1-mesa-dev libxcb-xinerama0 libxcb-icccm4 libxcb-image0 \
+    libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xkb1 \
+    libxkbcommon-x11-0 vulkan-tools libvulkan1 mesa-vulkan-drivers \
+    && rm -rf /var/lib/apt/lists/*
+
+# O3DE 25.05 — installer pre-compilado
+# TODO: reemplazar con URL oficial cuando esté disponible el release Jazzy
+# Ref: https://o3de.org/download/
+# RUN wget -q https://o3de.org/releases/25.05/o3de-25.05-linux.tar.gz \
+#     && tar xzf o3de-25.05-linux.tar.gz -C /opt/ \
+#     && rm o3de-25.05-linux.tar.gz
+
+# O3DE desde código fuente (mientras no hay binario Jazzy pre-compilado)
+# Build en etapa separada para no contaminar imagen final
+# RUN git clone --depth 1 --branch 25.05.0 https://github.com/o3de/o3de.git /opt/o3de \
+#     && /opt/o3de/scripts/o3de.sh register --this-engine
+
+# o3de-extras (ROS2 Gem, RGL Gem, etc.)
+# RUN git clone --depth 1 --branch 25.05.0 https://github.com/o3de/o3de-extras.git /opt/o3de-extras
+
+# RobotecAI RGL Gem (LiDAR GPU-accelerated con CUDA)
+# RUN git clone https://github.com/RobotecAI/o3de-rgl-gem.git /opt/o3de-rgl-gem
+
+# Proyecto LawnMower
+COPY project/ /lawnmower_sim/
+
+WORKDIR /lawnmower_sim
+
+# DDS — mismo que LawnMower-Nav2 para comunicación inter-contenedor
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+# Modo headless (sin render) para CI/SITL puro
+# Con GPU: quitar -NullRenderer para física LiDAR GPU
+ENV O3DE_RENDER_MODE=headless
+
+COPY docker/entrypoint-o3de.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

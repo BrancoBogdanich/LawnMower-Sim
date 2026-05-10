@@ -1,0 +1,59 @@
+# Mapeo de topics O3DE → ROS2
+# Todos los nombres coinciden exactamente con LawnMower-Nav2
+# para que el stack Nav2 no necesite ningún cambio.
+
+publishes:
+  lidar:
+    topic: /unilidar/cloud
+    type: sensor_msgs/PointCloud2
+    config:
+      rings: 18
+      horizontal_resolution: 1.0   # grados (360 puntos por ring)
+      frequency: 5.55              # Hz — igual al Unitree L2 real
+      range_max: 30.0              # metros
+      noise_stddev: 0.02           # metros — ruido gaussiano por rayo
+
+  gps:
+    topic: /mavros/mavros/raw/fix
+    type: sensor_msgs/NavSatFix
+    config:
+      frequency: 5.0               # Hz — igual al Here4 real
+      # Covariance según modo RTK (simulado por gps_degradation_node):
+      # RTK fix:   position_covariance[0] = 0.01  (1cm)
+      # RTK float: position_covariance[0] = 0.5   (50cm)
+      # GPS lost:  position_covariance[0] = 100.0
+      default_mode: rtk_fix
+      lat: -26.430866              # SITL home lat
+      lon: -60.162910              # SITL home lon
+
+  imu:
+    topic: /imu/data
+    type: sensor_msgs/Imu
+    config:
+      frequency: 200.0             # Hz — igual al ArduPilot EKF3
+      angular_velocity_stddev: 0.009   # rad/s
+      linear_acceleration_stddev: 0.17 # m/s²
+      orientation_covariance: 0.01     # igual que imu_relay.py
+
+  wheel_odometry:
+    topic: /mavros/mavros/wheel_odometry/odom
+    type: nav_msgs/Odometry
+    config:
+      frequency: 50.0              # Hz
+      cpr: 28                      # pulsos por vuelta — igual NJK-5002C
+      wheel_radius: 0.125          # metros
+      noise_stddev: 0.001          # cuantización CPR=28
+
+  odometry:
+    topic: /odom
+    type: nav_msgs/Odometry
+    config:
+      frequency: 50.0
+
+subscribes:
+  cmd_vel:
+    topic: /cmd_vel
+    type: geometry_msgs/Twist
+    config:
+      max_linear: 1.0              # m/s
+      max_angular: 1.2             # rad/s

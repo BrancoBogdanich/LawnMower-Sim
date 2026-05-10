@@ -1,0 +1,44 @@
+services:
+
+  # O3DE simulation — mundo jardín 3D + sensores sintéticos
+  lm-sim-o3de:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.o3de
+    container_name: lm-sim-o3de
+    hostname: lm-sim-o3de
+    environment:
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - O3DE_RENDER_MODE=${O3DE_RENDER_MODE:-headless}
+    ports:
+      - "8769:8765"    # Foxglove Studio (ws://localhost:8769)
+    networks:
+      lm_sim_net:
+        ipv4_address: 172.23.0.10
+    # GPU passthrough para RGL LiDAR CUDA (GTX 1660)
+    # Descomentar cuando se active RGL Gem:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ros2", "topic", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+networks:
+  lm_sim_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24
+
+# Nota: para correr con el stack Nav2 completo (LawnMower-Nav2),
+# ambos contenedores deben estar en la misma red DDS.
+# Usar --network host o configurar cyclonedds.xml con peer discovery.

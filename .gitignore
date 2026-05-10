@@ -1,0 +1,57 @@
+# O3DE build outputs
+build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+*.cmake
+!CMakeLists.txt
+
+# O3DE editor cache
+Cache/
+.cache/
+user/
+
+# O3DE temp / intermediate
+*.pak
+*.dds
+*.dds.*
+*.ctc
+Temp/
+TestResults/
+
+# O3DE compiled shaders
+ShaderCache/
+ShaderCacheUnchecked/
+
+# O3DE user settings (keep project settings, not per-user)
+Registry/user/
+
+# Docker
+docker/volumes/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large binary assets (track with Git LFS instead)
+*.fbx
+*.obj
+*.glb
+*.gltf
+*.png
+*.jpg
+*.exr
+*.hdr
