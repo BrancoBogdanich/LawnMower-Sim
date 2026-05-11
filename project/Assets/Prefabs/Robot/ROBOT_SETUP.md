@@ -40,11 +40,12 @@
 | | odom_frame=`odom`, base_frame=`base_link` |
 | | publish_tf=true |
 
-### WheelOdom (encoder simulado)
+### WheelOdom (encoder simulado — MT6701 en piñón 9T)
 | Componente | Config |
 |---|---|
-| `ROS2 Vehicle Model` | CPR=28 (simula NJK-5002C) |
+| `ROS2 Vehicle Model` | CPR=4096 (MT6701 1024PPR × ratio 4:1) |
 | | topic=`/mavros/mavros/wheel_odometry/odom` |
+| | wheel_radius=0.125, frequency=50Hz |
 
 ### unilidar_lidar
 | Componente | Config |

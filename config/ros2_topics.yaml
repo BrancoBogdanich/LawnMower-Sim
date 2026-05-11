@@ -40,9 +40,9 @@ publishes:
     type: nav_msgs/Odometry
     config:
       frequency: 50.0              # Hz
-      cpr: 28                      # pulsos por vuelta — igual NJK-5002C
+      cpr: 4096                    # MT6701 1024PPR × ratio cadena 4:1 (9T→36T)
       wheel_radius: 0.125          # metros
-      noise_stddev: 0.001          # cuantización CPR=28
+      noise_stddev: 0.0002         # cuantización CPR=4096 (0.785/4096=0.19mm)
 
   odometry:
     topic: /odom
