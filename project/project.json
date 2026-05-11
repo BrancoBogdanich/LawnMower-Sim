@@ -1,0 +1,20 @@
+{
+    "project_name": "LawnMowerSim",
+    "project_id": "{A3F2B8C1-4D7E-4F9A-B2C3-D4E5F6A7B8C9}",
+    "origin": "The Open 3D Foundation",
+    "license": "Apache-2.0",
+    "display_name": "LawnMower Sim",
+    "summary": "O3DE simulation for LawnMower-Nav2 autonomous robot — garden world with differential drive robot, Unitree L2 LiDAR, Here4 GPS, IMU, wheel encoders.",
+    "canonical_tags": ["Simulation", "Robotics", "ROS2"],
+    "user_tags": ["LawnMower", "Nav2", "Jazzy"],
+    "icon_path": "preview.png",
+    "engine": "o3de-25.05",
+    "external_subdirectories": [],
+    "gem_names": [
+        "ROS2",
+        "RGL",
+        "Terrain",
+        "Vegetation",
+        "PhysX5"
+    ]
+}
